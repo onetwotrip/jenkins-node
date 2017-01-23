@@ -1,0 +1,10 @@
+FROM node:%%NODE_VERSION%%
+MAINTAINER avikez@gmail.com (Dmitry Shmelev)
+
+RUN apt-get update && apt-get install -y \
+  libzmq3-dev \
+  python-minimal
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN useradd jenkins -u 1007 --shell /bin/bash --create-home
+USER jenkins
