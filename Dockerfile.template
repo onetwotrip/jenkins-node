@@ -1,10 +1,22 @@
-FROM node:%%NODE_VERSION%%
+FROM openjdk:8-jdk
 MAINTAINER avikez@gmail.com (Dmitry Shmelev)
 
-RUN apt-get update && apt-get install -y \
-  libzmq3-dev \
-  python-minimal
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN curl -sL https://deb.nodesource.com/setup_%%NODE_VERSION%% | bash -
+RUN apt-get install -y build-essential nodejs
 
-RUN useradd jenkins -u 1007 --shell /bin/bash --create-home
+ENV HOME /home/jenkins
+RUN useradd -c "Jenkins user" -d $HOME -m jenkins
+
+ARG VERSION=2.62
+
+RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+  && chmod 755 /usr/share/jenkins \
+  && chmod 644 /usr/share/jenkins/slave.jar
+
+COPY jenkins-slave /usr/local/bin/jenkins-slave
+
+VOLUME /home/jenkins
+WORKDIR /home/jenkins
 USER jenkins
+
+ENTRYPOINT ["jenkins-slave"]
