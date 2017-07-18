@@ -10,7 +10,7 @@ sed -r "$sedStr" $1
 
 docker login -u $DOCKER_USER -p $DOCKER_PASS
 
-versions=(0.10 4.x 5.x 6.x 7.x 8.x)
+versions=(0.10 4.x 4.8.4 5.x 6.x 7.x 8.x)
 for version in ${versions[*]}; do
   mkdir -p .build/$version
   cp jenkins-slave .build/$version
